@@ -7,7 +7,17 @@
     <texture type="skybox" file="./asset/desert.png" gridsize="3 4" gridlayout=".U..LFRB.D.." />
     <texture name="plane" type="2d" builtin="checker" rgb1=".1 .1 .1" rgb2=".9 .9 .9" width="512" height="512" mark="cross" markrgb=".8 .8 .8" />
     <material name="plane" reflectance="0.3" texture="plane" texrepeat="1 1" texuniform="true" />
-    <material name="robot_color" rgba="0.792 0.820 0.933 0.3" specular="0.1" shininess="0.1"/>
+    <!-- 定义新的颜色材质 -->
+    <!-- 黑色部件：用于截割头、履带、铲板 -->
+    <material name="black_metal" rgba="0.1 0.1 0.1 1" specular="0.5" shininess="0.5"/>
+    <!-- 工程黄：用于机身主体 -->
+    <material name="engineering_yellow" rgba="0.95 0.75 0.1 1" specular="0.3" shininess="0.3"/>
+    <!-- 银灰色：用于液压杆、活塞等 -->
+    <material name="silver_metal" rgba="0.7 0.7 0.7 1" specular="0.8" shininess="0.8"/>
+    <!-- 深灰色：用于机械臂连接处等 -->
+    <material name="dark_grey" rgba="0.3 0.3 0.3 1" specular="0.3" shininess="0.3"/>
+    <!-- 机器人主体颜色，暂时抛弃 -->
+    <material name="robot_color" rgba="0.792 0.820 0.933 1" specular="0.1" shininess="0.1"/>
 
     <mesh name="base_link" file="base_link.STL"/>
     <mesh name="gangti_benti_link_left" file="gangti_benti_link_left.STL"/>
@@ -33,7 +43,7 @@
     <geom name="floor" pos="0 0 0" size="0 0 .25" type="plane" material="plane" condim="3"/>
     <light directional="true" ambient=".3 .3 .3" pos="30 30 30" dir="0 -.5 -1" diffuse=".5 .5 .5" specular=".5 .5 .5" />
 
-    <body name="base_link" pos="0 0 0.1">
+    <body name="base_link" pos="0 0 0">
       <freejoint/>
       <!-- <joint name="root_x" type="slide" axis="1 0 0" limited="false" damping="500000" frictionloss="200000" armature="1000"/>     
       <joint name="root_y" type="slide" axis="0 1 0" limited="false" damping="500000" frictionloss="200000" armature="1000"/>
@@ -43,7 +53,7 @@
       <joint name="root_rz" type="hinge" axis="0 0 1" limited="false" damping="500000" frictionloss="200000" armature="1000"/> -->
       <inertial pos="-0.223886 -1.41339 0.86439" mass="38000" fullinertia="7951.91 1905.47 7912.79 -2.97869 24.2803 497.606"/>
       <!-- 掘进机身，半透明效果 -->
-      <geom type="mesh" mesh="base_link" rgba="0.792 0.820 0.933 1" contype="0" conaffinity="0"/>
+      <geom type="mesh" mesh="base_link" material="engineering_yellow" contype="0" conaffinity="0"/>
       <!-- 机身顶部回转台轴心连接处半透明白球（与紫球连接） -->
       <site name="connect_site_w" size="0.02" pos="0 0.60993694 1.50741734" rgba="1 1 1 0.5"/>
       <!-- 铲板的小棕球，与蓝球连接 -->
@@ -51,26 +61,26 @@
 
       <body name="lvdai_link" pos="0 0 0">
         <inertial pos="1.68306e-07 -0.0474553 0.380139" mass="10000000" fullinertia="0.318116 3.72355 3.86899 9.65e-14 -6.91e-13 0.00271"/>
-        <geom type="mesh" mesh="lvdai_link" material="robot_color" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001"/>
+        <geom type="mesh" mesh="lvdai_link" material="black_metal" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001"/>
       </body>
 
       <!-- 左侧活塞杆的筒子（与机身的连接关系） -->
       <body name="gangti_benti_link_left" pos="-0.265 -1.0901 1.4627">
         <inertial pos="-0.143056 0.536083 5.15143e-14" mass="215" fullinertia="23.2898 3.03454 24.8325 6.10476 6.37e-13 -2.28e-12"/>
         <joint name="gangti_benti_joint_left" pos="0 0 0" axis="0 0 1" type="hinge" limited="true" range="-30 30"/>
-        <geom type="mesh" mesh="gangti_benti_link_left" material="robot_color" contype="0" conaffinity="0"/>
+        <geom type="mesh" mesh="gangti_benti_link_left" material="dark_grey" contype="0" conaffinity="0"/>
 
         <!-- 左侧活塞内杆（与左侧活塞杆的筒子的连接关系） -->
         <body name="gangti_self_link_left" pos="-0.18973 0.63788 0">
           <inertial pos="-0.170745 0.64059 6.12843e-14" mass="100" fullinertia="8.73528 0.931274 9.50162 2.39046 2.51e-13 -8.97e-13"/>
           <joint name="gangti_self_joint_left" pos="0 0 0" axis="0.27138 -0.96247 0" type="slide" limited="true" range="-0.45 0.45" damping="100000"/>
-          <geom type="mesh" mesh="gangti_self_link_left" material="robot_color" contype="0" conaffinity="0"/>
+          <geom type="mesh" mesh="gangti_self_link_left" material="silver_metal" contype="0" conaffinity="0"/>
 
           <!-- 回转台本体（与左侧活塞内杆的连接关系） -->
           <body name="huosai_link_left" pos="-0.25906 0.9538 0">
             <inertial pos="0.709271 0.498249 -0.0288224" mass="2220" fullinertia="356.14 563.766 829.689 -2.43863 -0.73432 63.2033"/>
             <joint name="huosai_joint_left" pos="0 0 0" axis="0 0 1" type="hinge" limited="true" range="-60 60"/>
-            <geom type="mesh" mesh="huosai_link_left" material="robot_color" contype="0" conaffinity="0"/>
+            <geom type="mesh" mesh="huosai_link_left" material="engineering_yellow" contype="0" conaffinity="0"/>
             <!-- 回转台轴心半透明紫球（与白球连接） -->
             <site name="connect_site_p" size="0.02" pos="0.71378685 0.1083205 0.04475" rgba="0 0 1 0.5"/>
             <!-- 回转台右侧和机身右侧的活塞内杆连接的电机轴心位置处小绿球（与黑球连接） -->
@@ -82,20 +92,20 @@
             <body name="huizhuan_huosai_link" pos="0.15148 1.1618 -0.40225">
               <inertial pos="0.545327 0.404373 0.279977" mass="270" fullinertia="24.7803 9.54969 17.3422 0.177385 0.126477 -10.8544"/>
               <joint name="huizhuan_huosai_joint" pos="0 0 0" axis="-0.99993 -0.011647 0" type="hinge" limited="true" range="-45 60"/>
-              <geom type="mesh" mesh="huizhuan_huosai_link" material="robot_color" contype="0" conaffinity="0"/>
+              <geom type="mesh" mesh="huizhuan_huosai_link" material="dark_grey" contype="0" conaffinity="0"/>
 
               <!-- 截割抬升部前端左侧活塞内杆（与截割抬升部的左侧活塞筒子的连接关系） -->
               <body name="huosai_front_link" pos="0.0027509 0.48703 0.34257">
                 <inertial pos="0.536279 0.458021 0.317788" mass="260" fullinertia="34.84 11.9018 23.3978 0.267205 0.18651 -16.013"/>
                 <!-- <joint name="huosai_front_joint" pos="0 0 0" axis="0.0095257 -0.81784 -0.57537" type="slide" limited="true" range="-0.33 0.40" stiffness="500000" damping="2000000" frictionloss="10000" armature="50"/> -->
                 <joint name="huosai_front_joint" pos="0 0 0" axis="0.0095257 -0.81784 -0.57537" type="slide" limited="true" range="-0.33 0.40" damping="2000000"/>
-                <geom type="mesh" mesh="huosai_front_link" material="robot_color" contype="0" conaffinity="0"/>
+                <geom type="mesh" mesh="huosai_front_link" material="silver_metal" contype="0" conaffinity="0"/>
 
                 <!-- 截割抬升部本身（与截割抬升部前端左侧活塞内杆的连接关系） -->
                 <body name="huosai_dianji_link" pos="-0.017905 0.81402 0.57274">
                   <inertial pos="0.587779 -0.649072 -0.0203362" mass="7000" fullinertia="906.702 703.34 1104.15 -30.0035 -29.1691 -191.424"/>
                   <joint name="huosai_dianji_joint" pos="0 0 0" axis="0.99993 0.011647 0" type="hinge" limited="true" range="-60 45"/>
-                  <geom type="mesh" mesh="huosai_dianji_link" material="robot_color" contype="0" conaffinity="0"/>
+                  <geom type="mesh" mesh="huosai_dianji_link" material="engineering_yellow" contype="0" conaffinity="0"/>
                   <!-- 回转台左侧靠上的洞口的半透明黄球，截割抬升部建立旋转连接的电机轴心位置（与红球连接） -->
                   <site name="connect_site_y" size="0.02" pos="0.09775881 -1.61010572 -0.43530886" rgba="1 1 0 0.5"/>
 
@@ -103,7 +113,7 @@
                   <body name="jiege_shengsuo_link" pos="0.06462 0.37645 0.51302">
                     <inertial pos="0.4701 0.68555 0.20766" mass="500" fullinertia="29.5879 30.0343 32.5419 0.00368 0.10196 -1.21569"/>
                     <joint name="jiege_shengsuo_joint" pos="0 0 0" axis="0.010758 -0.92367 -0.38303" type="slide" limited="true" range="-0.34 0.3" damping="10000"/>
-                    <geom type="mesh" mesh="jiege_shengsuo_link" material="robot_color" contype="0" conaffinity="0"/>
+                    <geom type="mesh" mesh="jiege_shengsuo_link" material="silver_metal" contype="0" conaffinity="0"/>
 
                     <!-- 截割本体（与截割伸缩部的连接关系） -->
                     <body name="jiege_link" pos="0.46938 0.91419 0.25228">
@@ -111,7 +121,7 @@
                       <site name="cutter_tip" pos="0 0 0" size="0.02" rgba="1 0 0 1"/>
                       <inertial pos="-0.00429994 0.33473 0.138942" mass="2410" fullinertia="197.092 168.288 192.138 0.33458 0.14037 -11.9442"/>
                       <joint name="jiege_joint" pos="0 0 0" axis="-0.010758 0.92367 0.38303" type="hinge" limited="false"/>
-                      <geom type="mesh" mesh="jiege_link" material="robot_color" contype="1" conaffinity="1" condim="3" friction="0.8 0.005 0.0001"/>
+                      <geom type="mesh" mesh="jiege_link" material="black_metal" contype="1" conaffinity="1" condim="3" friction="0.8 0.005 0.0001"/>
                     </body>
                   </body>
                 </body>
@@ -124,13 +134,13 @@
       <body name="gangti_benti_link_right" pos="0.265 -1.0901 1.4627">
         <inertial pos="0.142325 0.536278 4.996e-14" mass="215" fullinertia="23.3065 3.01792 24.8325 -6.07711 -5.7e-13 -2.04e-12"/>
         <joint name="gangti_benti_joint_right" pos="0 0 0" axis="0 0 -1" type="hinge" limited="true" range="-30 30"/>
-        <geom type="mesh" mesh="gangti_benti_link_right" material="robot_color" contype="0" conaffinity="0"/>
+        <geom type="mesh" mesh="gangti_benti_link_right" material="dark_grey" contype="0" conaffinity="0"/>
 
         <!-- 右侧活塞内杆（与右侧活塞杆的筒子的连接关系） -->
         <body name="gangti_self_link_right" pos="0.18886 0.63814 0">
           <inertial pos="0.174372 0.656867 6.26166e-14" mass="115" fullinertia="10.0528 1.06345 10.9265 -2.73669 -2.55e-13 -9.25e-13"/>
           <joint name="gangti_self_joint_right" pos="0 0 0" axis="-0.27006 -0.96284 0" type="slide" limited="true" range="-0.8 0.8" damping="100000"/>
-          <geom type="mesh" mesh="gangti_self_link_right" material="robot_color" contype="0" conaffinity="0"/>
+          <geom type="mesh" mesh="gangti_self_link_right" material="silver_metal" contype="0" conaffinity="0"/>
           <!-- 机身右侧和回转台右侧的活塞内杆连接的电机轴心位置处小黑球（与绿球连接） -->
           <site name="connect_site_b" size="0.02" pos="0.26225561 0.97019282 0" rgba="0 0 0 1"/>
         </body>
@@ -138,17 +148,17 @@
       <body name="chanban_link" pos="-0.419 1.1499 0.83529">
         <inertial pos="0.422 0.244668 -0.0575007" mass="175" fullinertia="5.71212 1.62839 5.3891 0 -1.27e-08 0.93696"/>
         <joint name="chanban_joint" pos="0 0 0" axis="-1 0 0" type="hinge" limited="true" range="-15 15"/>
-        <geom type="mesh" mesh="chanban_link" rgba="0.792 0.820 0.933 0.5" contype="0" conaffinity="0"/>
+        <geom type="mesh" mesh="chanban_link" material="black_metal" contype="0" conaffinity="0"/>
 
         <body name="chanban_huosai_link" pos="0 0.33967 -0.080145">
           <inertial pos="0.422 0.236593 -0.0558239" mass="175" fullinertia="4.6704 0.80287 4.24808 0 0 0.8608"/>
           <joint name="chanban_huosai_joint" pos="0 0 0" axis="0 -0.97327 0.22964" type="slide" limited="true" range="-0.18 0.08"/>
-          <geom type="mesh" mesh="chanban_huosai_link" material="robot_color" contype="0" conaffinity="0"/>
+          <geom type="mesh" mesh="chanban_huosai_link" material="silver_metal" contype="0" conaffinity="0"/>
 
           <body name="chanban_benti_link" pos="0 0.37877 -0.08937">
             <inertial pos="0.418338 0.721211 -0.35214" mass="6000" fullinertia="1336.72 593 1761.22 80.6618 1.7399 189.296"/>
             <joint name="chanban_benti_joint" pos="0 0 0" axis="1 0 0" type="hinge" limited="true" range="-15 15"/>
-            <geom type="mesh" mesh="chanban_benti_link" material="robot_color" contype="1" conaffinity="1" condim="3" friction="0.7 0.005 0.0001"/>
+            <geom type="mesh" mesh="chanban_benti_link" material="black_metal" contype="1" conaffinity="1" condim="3" friction="0.7 0.005 0.0001"/>
             <!-- 铲板连接小蓝球，与棕球连接 -->
             <site name="connect_site_blue" size="0.02" pos="0 -0.59344143 -0.26048468" rgba="0 0 1 0.5"/>
 
@@ -156,14 +166,14 @@
             <body name="xinglunpan_link_left" pos="-0.358 0.89777 -0.22478">
               <inertial pos="-1.80322e-12 0.0130101 0.0601799" mass="100" fullinertia="1.64844 1.72431 3.14515 4.11e-05 -8.87e-06 0.32222"/>
               <joint name="xinglunpan_joint_left" pos="0 0 0" axis="0 -0.2113 -0.97742" type="hinge" limited="false"/>
-              <geom type="mesh" mesh="xinglunpan_link_left" material="robot_color" contype="0" conaffinity="0"/>
+              <geom type="mesh" mesh="xinglunpan_link_left" material="dark_grey" contype="0" conaffinity="0"/>
             </body>
 
             <!-- 右侧星轮盘 -->
             <body name="xinglunpan_link_right" pos="1.202 0.89777 -0.22478">
               <inertial pos="-6.4179e-10 0.0130101 0.0601799" mass="100" fullinertia="1.65001 1.72281 3.14509 0.00263 -0.00057 0.32255"/>
               <joint name="xinglunpan_joint_right" pos="0 0 0" axis="0 -0.2113 -0.97742" type="hinge" limited="false"/>
-              <geom type="mesh" mesh="xinglunpan_link_right" material="robot_color" contype="0" conaffinity="0"/>
+              <geom type="mesh" mesh="xinglunpan_link_right" material="dark_grey" contype="0" conaffinity="0"/>
             </body>
           </body>
         </body>

@@ -125,8 +125,8 @@ if __name__ == "__main__":
         current_tip = d.site_xpos[ik_solver.site_id].copy()
         print(f"Current Tip Position: {current_tip}")
         
-        # 定义一个测试目标点：在当前位置基础上，X轴向前移动 0.2 米
-        target = current_tip + np.array([0.01, 0.0, 0.0]) 
+        # 定义一个测试目标点：在当前位置基础上，Y轴向前移动 0.1 米
+        target = current_tip + np.array([0.0, 0.1, 0.0]) 
         print(f"Target Position: {target}")
         
         # 求解
