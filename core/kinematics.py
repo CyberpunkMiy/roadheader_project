@@ -108,7 +108,7 @@ if __name__ == "__main__":
     import time
     import mujoco.viewer  # 引入渲染器
 
-    xml_path = "../myrobot.xml" 
+    xml_path = "../myrobot_mink.xml" 
     
     if os.path.exists(xml_path):
         print(f"Loading model from {xml_path}...")
@@ -125,7 +125,8 @@ if __name__ == "__main__":
         current_tip = d.site_xpos[ik_solver.site_id].copy()
         
         # 设定目标：向上抬 0.1 米，向前伸 0.1 米
-        target = current_tip + np.array([-0.5, -0.3, -0.5]) 
+        # target = current_tip + np.array([-0.5, 0.3, 0.5]) 
+        target = np.array([0.1335, 0.3092, 0.3482]) 
         
         print("计算 IK 中...")
         ctrl = ik_solver.solve(target)
