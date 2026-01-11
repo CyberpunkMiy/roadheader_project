@@ -10,8 +10,8 @@ class RoadheaderIK:
         self.model = model
         self.data = data
         
-        # 1. [修改] 必须先运行一次前向动力学，确保所有关节轴向(xaxis)和几何关系被初始化
-        #    如果没有这行，mj_jacSite 读到的初始数据可能是 0
+        #  必须先运行一次前向动力学，确保所有关节轴向(xaxis)和几何关系被初始化
+        #  如果没有这行，mj_jacSite 读到的初始数据可能是 0
         mujoco.mj_forward(self.model, self.data)
 
         # 获取截割头尖端的 site ID
@@ -22,7 +22,7 @@ class RoadheaderIK:
         # 关节列表 (根据 debug_kinematics 确认的名称)
         joint_names = ["gangti_self_joint_left", "huosai_front_joint", "jiege_shengsuo_joint"]
         
-        # 2. [修改] 分别存储 qpos_adr (用于改数值) 和 dof_adr (用于查 Jacobian)
+        # 分别存储 qpos_adr (用于改数值) 和 dof_adr (用于查 Jacobian)
         self.qpos_indices = [] # 对应 data.qpos
         self.dof_indices = []  # 对应 Jacobian 的列
         
@@ -64,7 +64,7 @@ class RoadheaderIK:
             # jacr = np.zeros((3, self.model.nv)) # 如果需要姿态控制则启用
             mujoco.mj_jacSite(self.model, self.data, jacp, None, self.site_id)
             
-            # 3. [修改] 使用 dof_indices 切片 Jacobian
+            # dof_indices 切片 Jacobian
             j_reduced = jacp[:, self.dof_indices]
 
             # 求解关节增量: delta_q = J_pinv * error
@@ -75,13 +75,13 @@ class RoadheaderIK:
             # 或者直接用 np.linalg.pinv (简单粗暴，通常够用)
             delta_q = np.linalg.pinv(j_reduced, rcond=1e-2) @ error
             
-            # 4. [修改] 使用 qpos_indices 更新关节角度
+            # 使用 qpos_indices 更新关节角度
             # 步长 0.2 比较保守，防止并在闭链结构中震荡
             self.data.qpos[self.qpos_indices] += delta_q * 0.2
             
-            # 5. [修改] 关键点：这里用 mj_forward 而不是 mj_kinematics
-            #    因为你的模型有很多 equality constraints (闭链)，
-            #    forward 会计算约束力并修正位置，让物理状态更合法
+            # 关键点：这里用 mj_forward 而不是 mj_kinematics
+            # 因为你的模型有很多 equality constraints (闭链)，
+            # forward 会计算约束力并修正位置，让物理状态更合法
             mujoco.mj_forward(self.model, self.data)
 
         # 提取结果

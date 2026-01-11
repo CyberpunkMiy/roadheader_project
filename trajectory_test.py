@@ -74,8 +74,8 @@ def main():
     
     trajectory = generate_s_curve_trajectory(
         start_pos=center_pos,
-        width=0.05,   # 左右只扫 0.3 米
-        height=0.05,  # 上下只扫 0.2 米
+        width=0.001,   # 左右只扫 0.3 米
+        height=0.001,  # 上下只扫 0.2 米
         rows=3,      
         points_per_row=30
     )
